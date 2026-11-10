@@ -1,0 +1,6 @@
+{
+  "name": "LEEDO FOODCARE",
+  "description": "Centralized grocery procurement, inventory, shelter-wise distribution, receiving confirmation, daily consumption, child attendance, accounts, and reporting management system for LEEDO Bangladesh.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,275 @@
+{
+  "entities": {
+    "Employee": {
+      "title": "Employee",
+      "description": "LEEDO employee profile with EID, designation, role and facility access",
+      "type": "object",
+      "properties": {
+        "eid": { "type": "string", "maxLength": 16 },
+        "name": { "type": "string", "maxLength": 100 },
+        "designation": { "type": "string", "maxLength": 100 },
+        "department": { "type": "string", "maxLength": 50 },
+        "facilityId": { "type": "string", "maxLength": 50 },
+        "role": { "type": "string", "maxLength": 50 },
+        "phone": { "type": "string", "maxLength": 20 },
+        "email": { "type": "string", "maxLength": 100 },
+        "status": { "type": "string", "enum": ["active", "inactive"] },
+        "passwordChanged": { "type": "boolean" },
+        "requiresPasswordReset": { "type": "boolean" },
+        "passwordHash": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["eid", "name", "designation", "role", "status"]
+    },
+    "Facility": {
+      "title": "Facility",
+      "description": "Residential facility or Head Office",
+      "type": "object",
+      "properties": {
+        "facilityId": { "type": "string", "maxLength": 50 },
+        "name": { "type": "string", "maxLength": 100 },
+        "type": { "type": "string", "enum": ["head_office", "shelter"] },
+        "location": { "type": "string", "maxLength": 200 },
+        "capacity": { "type": "number" },
+        "inChargeEid": { "type": "string", "maxLength": 16 },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["facilityId", "name", "type"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Master grocery, food or consumables item",
+      "type": "object",
+      "properties": {
+        "productId": { "type": "string", "maxLength": 50 },
+        "name": { "type": "string", "maxLength": 100 },
+        "nameBn": { "type": "string", "maxLength": 100 },
+        "category": { "type": "string", "maxLength": 50 },
+        "unit": { "type": "string", "maxLength": 20 },
+        "isFood": { "type": "boolean" },
+        "minStockLevel": { "type": "number" },
+        "avgUnitPrice": { "type": "number" }
+      },
+      "required": ["productId", "name", "category", "unit", "isFood"]
+    },
+    "Requisition": {
+      "title": "Requisition",
+      "description": "Shelter grocery requisition",
+      "type": "object",
+      "properties": {
+        "reqId": { "type": "string", "maxLength": 50 },
+        "facilityId": { "type": "string", "maxLength": 50 },
+        "requestDate": { "type": "string" },
+        "requiredDate": { "type": "string" },
+        "status": { "type": "string", "enum": ["submitted", "incharge_approved", "approved", "rejected", "procured"] },
+        "priority": { "type": "string", "enum": ["normal", "urgent", "emergency"] },
+        "requestingEid": { "type": "string", "maxLength": 16 },
+        "remarks": { "type": "string", "maxLength": 500 },
+        "items": { "type": "array" }
+      },
+      "required": ["reqId", "facilityId", "requestDate", "status"]
+    },
+    "Purchase": {
+      "title": "Purchase",
+      "description": "Central grocery purchase entry",
+      "type": "object",
+      "properties": {
+        "purchaseId": { "type": "string", "maxLength": 50 },
+        "purchaseDate": { "type": "string" },
+        "vendor": { "type": "string", "maxLength": 100 },
+        "market": { "type": "string", "maxLength": 100 },
+        "invoiceNo": { "type": "string", "maxLength": 50 },
+        "totalAmount": { "type": "number" },
+        "discount": { "type": "number" },
+        "transportCost": { "type": "number" },
+        "netAmount": { "type": "number" },
+        "paymentStatus": { "type": "string", "enum": ["paid", "pending", "partial"] },
+        "verificationStatus": { "type": "string", "enum": ["pending", "verified", "disputed", "approved"] },
+        "procurementOfficerEid": { "type": "string", "maxLength": 16 },
+        "items": { "type": "array" }
+      },
+      "required": ["purchaseId", "purchaseDate", "vendor", "totalAmount"]
+    },
+    "Distribution": {
+      "title": "Distribution",
+      "description": "Head Office dispatch to facilities",
+      "type": "object",
+      "properties": {
+        "distributionId": { "type": "string", "maxLength": 50 },
+        "dispatchDate": { "type": "string" },
+        "productId": { "type": "string", "maxLength": 50 },
+        "productName": { "type": "string", "maxLength": 100 },
+        "unit": { "type": "string", "maxLength": 20 },
+        "totalQuantity": { "type": "number" },
+        "kamalapurQty": { "type": "number" },
+        "kadamtaliQty": { "type": "number" },
+        "peaceHomeQty": { "type": "number" },
+        "deliveryPerson": { "type": "string", "maxLength": 100 },
+        "status": { "type": "string", "enum": ["dispatched", "received_full", "received_partial", "disputed"] }
+      },
+      "required": ["distributionId", "dispatchDate", "productId", "totalQuantity", "status"]
+    },
+    "ReceivingConfirmation": {
+      "title": "ReceivingConfirmation",
+      "description": "Facility receiving record with inspection & discrepancy tracking",
+      "type": "object",
+      "properties": {
+        "receivingId": { "type": "string", "maxLength": 50 },
+        "distributionId": { "type": "string", "maxLength": 50 },
+        "facilityId": { "type": "string", "maxLength": 50 },
+        "receivingDate": { "type": "string" },
+        "productId": { "type": "string", "maxLength": 50 },
+        "dispatchedQty": { "type": "number" },
+        "receivedQty": { "type": "number" },
+        "shortageQty": { "type": "number" },
+        "damagedQty": { "type": "number" },
+        "condition": { "type": "string", "enum": ["good", "damaged", "acceptable", "rejected"] },
+        "status": { "type": "string", "enum": ["received_full", "partially_received", "shortage_reported", "damage_reported", "disputed"] },
+        "receivingEid": { "type": "string", "maxLength": 16 },
+        "remarks": { "type": "string", "maxLength": 500 }
+      },
+      "required": ["receivingId", "distributionId", "facilityId", "dispatchedQty", "receivedQty", "status"]
+    },
+    "DailyConsumption": {
+      "title": "DailyConsumption",
+      "description": "Facility daily food and consumable consumption record",
+      "type": "object",
+      "properties": {
+        "consumptionId": { "type": "string", "maxLength": 50 },
+        "facilityId": { "type": "string", "maxLength": 50 },
+        "date": { "type": "string" },
+        "residentChildren": { "type": "number" },
+        "presentChildren": { "type": "number" },
+        "absentChildren": { "type": "number" },
+        "breakfastCount": { "type": "number" },
+        "lunchCount": { "type": "number" },
+        "snackCount": { "type": "number" },
+        "dinnerCount": { "type": "number" },
+        "specialMeals": { "type": "number" },
+        "totalFoodCost": { "type": "number" },
+        "costPerChild": { "type": "number" },
+        "items": { "type": "array" },
+        "enteredByEid": { "type": "string", "maxLength": 16 }
+      },
+      "required": ["consumptionId", "facilityId", "date", "presentChildren"]
+    },
+    "MarketPrice": {
+      "title": "MarketPrice",
+      "description": "Market price history for price monitoring and alerts",
+      "type": "object",
+      "properties": {
+        "priceId": { "type": "string", "maxLength": 50 },
+        "productId": { "type": "string", "maxLength": 50 },
+        "productName": { "type": "string", "maxLength": 100 },
+        "market": { "type": "string", "maxLength": 100 },
+        "vendor": { "type": "string", "maxLength": 100 },
+        "date": { "type": "string" },
+        "unit": { "type": "string", "maxLength": 20 },
+        "unitPrice": { "type": "number" },
+        "recordedByEid": { "type": "string", "maxLength": 16 }
+      },
+      "required": ["priceId", "productId", "market", "date", "unitPrice"]
+    },
+    "Budget": {
+      "title": "Budget",
+      "description": "Monthly facility budget and actual expenditure",
+      "type": "object",
+      "properties": {
+        "budgetId": { "type": "string", "maxLength": 50 },
+        "fiscalYear": { "type": "string", "maxLength": 20 },
+        "month": { "type": "string", "maxLength": 20 },
+        "facilityId": { "type": "string", "maxLength": 50 },
+        "category": { "type": "string", "maxLength": 50 },
+        "approvedAmount": { "type": "number" },
+        "utilizedAmount": { "type": "number" },
+        "variance": { "type": "number" }
+      },
+      "required": ["budgetId", "fiscalYear", "month", "facilityId", "approvedAmount"]
+    },
+    "ExceptionAlert": {
+      "title": "ExceptionAlert",
+      "description": "System exception or discrepancy alert for management review",
+      "type": "object",
+      "properties": {
+        "exceptionId": { "type": "string", "maxLength": 50 },
+        "facilityId": { "type": "string", "maxLength": 50 },
+        "title": { "type": "string", "maxLength": 200 },
+        "description": { "type": "string", "maxLength": 500 },
+        "severity": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+        "status": { "type": "string", "enum": ["open", "investigating", "resolved"] },
+        "date": { "type": "string" },
+        "relatedRecordId": { "type": "string", "maxLength": 50 },
+        "resolutionNote": { "type": "string", "maxLength": 500 }
+      },
+      "required": ["exceptionId", "title", "severity", "status", "date"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Immutable audit trail of all transactions and changes",
+      "type": "object",
+      "properties": {
+        "logId": { "type": "string", "maxLength": 50 },
+        "eid": { "type": "string", "maxLength": 16 },
+        "userName": { "type": "string", "maxLength": 100 },
+        "action": { "type": "string", "maxLength": 100 },
+        "module": { "type": "string", "maxLength": 50 },
+        "recordId": { "type": "string", "maxLength": 50 },
+        "details": { "type": "string", "maxLength": 1000 },
+        "facilityId": { "type": "string", "maxLength": 50 },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["logId", "eid", "action", "module", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/employees/{employeeId}": {
+      "schema": { "$ref": "#/entities/Employee" },
+      "description": "Employees directory and auth profile"
+    },
+    "/facilities/{facilityId}": {
+      "schema": { "$ref": "#/entities/Facility" },
+      "description": "Facility records"
+    },
+    "/products/{productId}": {
+      "schema": { "$ref": "#/entities/Product" },
+      "description": "Master grocery catalog"
+    },
+    "/requisitions/{reqId}": {
+      "schema": { "$ref": "#/entities/Requisition" },
+      "description": "Shelter requisitions"
+    },
+    "/purchases/{purchaseId}": {
+      "schema": { "$ref": "#/entities/Purchase" },
+      "description": "Central purchase records"
+    },
+    "/distributions/{distributionId}": {
+      "schema": { "$ref": "#/entities/Distribution" },
+      "description": "Head office allocations and dispatches"
+    },
+    "/receiving_confirmations/{receivingId}": {
+      "schema": { "$ref": "#/entities/ReceivingConfirmation" },
+      "description": "Facility receiving confirmations"
+    },
+    "/daily_consumption/{consumptionId}": {
+      "schema": { "$ref": "#/entities/DailyConsumption" },
+      "description": "Facility daily food consumption and meals"
+    },
+    "/market_prices/{priceId}": {
+      "schema": { "$ref": "#/entities/MarketPrice" },
+      "description": "Market price history tracking"
+    },
+    "/budgets/{budgetId}": {
+      "schema": { "$ref": "#/entities/Budget" },
+      "description": "Monthly facility budgets"
+    },
+    "/exceptions/{exceptionId}": {
+      "schema": { "$ref": "#/entities/ExceptionAlert" },
+      "description": "Management exception alerts"
+    },
+    "/audit_logs/{logId}": {
+      "schema": { "$ref": "#/entities/AuditLog" },
+      "description": "System immutable audit logs"
+    }
+  }
+}

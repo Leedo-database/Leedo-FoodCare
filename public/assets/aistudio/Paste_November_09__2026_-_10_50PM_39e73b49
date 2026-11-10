@@ -1,0 +1,1319 @@
+LEEDO FOODCARE
+
+FINAL MASTER PROMPT FOR GOOGLE AI STUDIO BUILD MODE
+
+Build a complete, professional, secure, production-ready organizational application named LEEDO FOODCARE for LEEDO (Local Education and Economic Development Organization), Bangladesh.
+
+The application will manage centralized grocery procurement, inventory, shelter-wise distribution, receiving confirmation, daily food consumption, meal management, child attendance, budgets, accounts, market price history, employee access, management monitoring, and comprehensive reporting.
+
+This must be a fully functional application connected to Firebase, not a static design, mockup, or demo.
+
+---
+
+1. APPLICATION PURPOSE
+
+LEEDO FOODCARE will provide a centralized system for managing food and grocery requirements for three residential facilities.
+
+The system must enable Head Office to:
+
+- Manage all procurement.
+- Maintain central stock.
+- Distribute groceries to facilities.
+- Track actual receiving confirmation.
+- Monitor facility-wise stock.
+- Track daily food consumption.
+- Monitor children, attendance, and meals.
+- Calculate food cost per child.
+- Monitor market prices.
+- Verify bills and expenditure.
+- Monitor budgets.
+- Generate management reports.
+- Maintain six years or more of historical records.
+- Print and export all reports.
+- Monitor all activities through audit logs.
+
+The entire application must be designed around transparency, accountability, inventory accuracy, financial integrity, and child nutrition monitoring.
+
+2. FACILITIES
+
+Create exactly these three facilities:
+
+1. Kamalapur TSSB
+2. Kadamtali TSSB
+3. LEEDO Peace Home
+
+Every requisition, purchase distribution, receiving confirmation, stock, consumption, attendance, budget, and report must be linked to the relevant facility.
+
+Use:
+
+- Currency: BDT
+- Timezone: Asia/Dhaka
+- Date format: DD-MM-YYYY
+- Language: Bangla and English
+- Responsive design: Android, tablet, desktop
+
+3. CENTRALIZED PROCUREMENT POLICY
+
+All regular grocery procurement must be controlled by Head Office.
+
+Field staff must not purchase groceries or other items independently without prior specific authorization.
+
+Procurement Responsibilities
+
+- Forhad Hossain: Founder & Executive Director, full organizational oversight.
+- Murshida Akhter Kanta: Director Admin & Finance, procurement and financial supervision.
+- Md. Omar Faruque: Manager HR & Admin, HR Super Admin and full application administration.
+- Rone Ahammed: Logistics Officer, centralized purchasing, vendor coordination, purchase entry, stock and distribution.
+- Sazzad Hosen: Assistant Accountant, accounts and procurement documentation.
+- Md Habibur Rahman: Accountant, independent financial verification.
+- Md. Sohel Rana: Manager Program & Operation, facility monitoring.
+
+Field staff only submit requisitions, receive goods, update stock, record consumption, maintain attendance, report shortages, and submit daily records.
+
+4. LOGIN AND EMPLOYEE ID SYSTEM
+
+The application must open with a secure login screen.
+
+No employee may access the application without authentication.
+
+Initial Login
+
+Every employee must have a unique EID.
+
+- Username = EID
+- Initial password = EID
+
+Examples:
+
+Employee| EID
+Forhad Hossain| 1001
+Murshida Akhter Kanta| 1002
+Md Habibur Rahman| 1004
+Rone Ahammed| 1009
+Md. Sohel Rana| 1013
+Md. Masud| 1023
+Saidur Rahman Sajan| 1028
+Md. Omar Faruque| 1057
+Sazzad Hosen| 1079
+
+Apply the same rule to all employees.
+
+Mandatory First Login Password Change
+
+After the first successful login:
+
+1. Force the employee to change the initial password.
+2. Prevent access to the dashboard until the password is changed.
+3. Require a new password and confirmation.
+4. Validate password strength.
+5. Record passwordChanged status.
+6. Redirect the employee to their authorized dashboard.
+
+EID must never remain the permanent password.
+
+HR Password Reset
+
+HR Super Admin must be able to:
+
+- Search employees by name or EID.
+- Initiate secure password reset.
+- Recover employee access.
+- Require a new password at next login.
+- Deactivate and reactivate accounts.
+- View password reset history.
+
+HR must never see existing passwords.
+
+Firebase Authentication
+
+Implement secure EID-based login using Firebase Authentication and a backend/Cloud Function to map EID to a valid Firebase Authentication identity.
+
+Do not store plaintext passwords in Firestore, Storage, localStorage, or application code.
+
+Implement logout, session security, password change, reset, account status, login history, and failed-login handling.
+
+5. USER DIRECTORY AND ACCESS MANAGEMENT
+
+Create a complete HR-controlled Employee Directory.
+
+HR must be able to:
+
+- Add employee.
+- Edit employee information.
+- Assign EID.
+- Assign designation.
+- Assign department.
+- Assign facility.
+- Assign supervisor.
+- Assign role.
+- Assign permissions.
+- Transfer employee.
+- Activate/deactivate employee.
+- Reset password.
+- Review access history.
+
+Never delete historical employee or financial records.
+
+INITIAL EMPLOYEE ACCESS
+
+EID| Employee| Designation| Access
+1001| Forhad Hossain| Founder & ED| Full Access
+1002| Murshida Akhter Kanta| Director Admin & Finance| Full Access
+1057| Md. Omar Faruque| Manager HR & Admin| Super Admin
+1004| Md Habibur Rahman| Accountant| Accounts Monitoring
+1079| Sazzad Hosen| Assistant Accountant| Accounts & Procurement Records
+1009| Rone Ahammed| Logistics Officer| Central Procurement & Distribution
+1023| Md. Masud| Social Mobilizer In-charge| Kamalapur
+1028| Saidur Rahman Sajan| Social Mobilizer| Kadamtali
+1013| Md. Sohel Rana| Manager Program & Operation| Facility Monitoring
+
+Additional Peace Home employees and other staff must be assigned through HR.
+
+6. ROLE-BASED PERMISSIONS
+
+Implement strict backend-enforced permissions using Firebase Security Rules and secure backend validation.
+
+Founder & ED: EID 1001
+
+Full organizational access to all facilities, purchases, accounts, reports, approvals, system monitoring, and audit logs.
+
+Director Admin & Finance: EID 1002
+
+Full procurement supervision, budget monitoring, financial monitoring, facility monitoring, approvals, reports, and management dashboards.
+
+HR Super Admin: EID 1057
+
+Full administrative access to:
+
+- All facilities.
+- All employees.
+- User management.
+- All application modules.
+- Procurement monitoring.
+- Financial monitoring.
+- Reports.
+- Audit logs.
+- System settings.
+- Password reset.
+- Employee transfer and account deactivation.
+
+Accountant: EID 1004
+
+- All facility accounts.
+- Purchase invoices.
+- Bill verification.
+- Budget monitoring.
+- Vendor ledger.
+- Financial reports.
+- Price history.
+- Monthly closing.
+
+Assistant Accountant: EID 1079
+
+- Accounts monitoring.
+- Procurement documentation.
+- Invoice records.
+- Assigned bill verification.
+- Budget reports.
+
+Logistics Officer: EID 1009
+
+- Central purchase entry.
+- Vendor management.
+- Market price entry.
+- Central stock.
+- Distribution.
+- Dispatch.
+- Facility-wise allocation.
+
+Cannot independently verify own purchases.
+
+Field In-charge
+
+- Facility requisition.
+- Stock monitoring.
+- Receiving confirmation.
+- Consumption.
+- Meal records.
+- Attendance.
+- Wastage.
+- Facility reports.
+
+Field Staff
+
+- Requisition submission.
+- Goods receiving confirmation.
+- Daily stock update.
+- Consumption entry.
+- Attendance.
+- Meal records.
+- Wastage reporting.
+
+No regular purchasing permissions.
+
+Peace Home Staff
+
+HR assigns limited access:
+
+- Cook: meal and food consumption entry.
+- Shelter Mother: stock and daily usage.
+- Supervisor: receipt confirmation, review, and reports.
+- Other staff: assigned permissions only.
+
+7. PRODUCT AND GROCERY MASTER CATALOG
+
+Create a comprehensive grocery and consumables catalog.
+
+Rice and Staples
+
+Rice, atta, maida, suji, chira, muri, noodles, bread, flour.
+
+Pulses
+
+Masoor dal, moong dal, chola, boot, other pulses.
+
+Vegetables
+
+Potato, onion, garlic, ginger, chili, tomato, carrot, cabbage, cauliflower, brinjal, pumpkin, beans, leafy vegetables, seasonal vegetables.
+
+Protein
+
+Broiler chicken, Sonali chicken, local chicken, Rui, Katla, Tilapia, Pangas, other fish, beef, mutton, eggs.
+
+Dairy
+
+Milk, powder milk, yogurt, butter.
+
+Fruits
+
+Banana, apple, orange, guava, papaya, watermelon, dates, seasonal fruits.
+
+Cooking Ingredients
+
+Oil, salt, sugar, turmeric, chili powder, coriander, cumin, spices, lemon.
+
+Breakfast and Snacks
+
+Bread, eggs, banana, milk, suji, chira, muri, biscuits, cake, fruits.
+
+Beverage
+
+Drinking water, water jars, tea, sugar, lemon.
+
+Kitchen Fuel
+
+LPG cylinder, gas refill, matchbox, lighter.
+
+Kitchen Supplies
+
+Food containers, foil, gloves, dishwashing liquid, scrubbers, kitchen tissue.
+
+Cleaning
+
+Detergent, handwash, toilet cleaner, tissue, garbage bags, mop, broom, floor cleaner.
+
+Child Personal Care
+
+Soap, shampoo, toothpaste, toothbrush, sanitary pads, towels.
+
+Special Nutrition
+
+Special dietary food, approved nutrition items, emergency food supplies.
+
+Separate food expenditure from non-food expenses.
+
+8. REQUISITION MANAGEMENT
+
+Field staff must submit grocery requisitions through the application.
+
+Each requisition must include:
+
+- Facility.
+- Request date.
+- Required delivery date.
+- Product.
+- Category.
+- Required quantity.
+- Unit.
+- Current stock.
+- Daily consumption.
+- Stock coverage days.
+- Reason.
+- Priority.
+- Requesting employee.
+- Facility in-charge.
+- Remarks.
+
+Generate unique requisition IDs.
+
+Workflow:
+
+Facility Request → In-charge Review → Head Office Review → Approval → Procurement.
+
+Head Office can consolidate requisitions, adjust quantities with documented reasons, approve, reject, or return for clarification.
+
+9. CENTRAL PURCHASE MANAGEMENT
+
+Authorized Head Office staff can record purchases.
+
+Purchase fields:
+
+- Purchase ID.
+- Purchase date.
+- Vendor.
+- Market.
+- Product.
+- Category.
+- Quantity.
+- Unit.
+- Unit price.
+- Total price.
+- Discount.
+- Transport cost.
+- Additional costs.
+- Invoice number.
+- Receipt.
+- Payment status.
+- Procurement officer.
+- Approval reference.
+- Remarks.
+
+Calculate all totals automatically.
+
+Upload bills, invoices, and receipts to Firebase Storage.
+
+Every purchase must be linked to vendor, product, date, employee, and financial record.
+
+10. CENTRAL STOCK MANAGEMENT
+
+Maintain separate stock for:
+
+- Head Office Central Stock.
+- Kamalapur TSSB.
+- Kadamtali TSSB.
+- LEEDO Peace Home.
+
+Purchase increases central stock.
+
+Distribution decreases central stock.
+
+Confirmed receiving increases facility stock.
+
+Consumption and wastage decrease facility stock.
+
+Maintain stock movement history.
+
+Prevent unauthorized negative inventory.
+
+11. FACILITY DISTRIBUTION
+
+Create a distribution module.
+
+Fields:
+
+- Distribution ID.
+- Purchase ID.
+- Requisition ID.
+- Distribution date.
+- Product.
+- Quantity purchased.
+- Quantity distributed.
+- Kamalapur allocation.
+- Kadamtali allocation.
+- Peace Home allocation.
+- Remaining central stock.
+- Delivery person.
+- Received by.
+- Dispatch status.
+- Remarks.
+
+Prevent distribution beyond available central stock.
+
+12. RECEIVING CONFIRMATION
+
+This is a mandatory module.
+
+After Head Office dispatches groceries, the receiving facility must confirm actual receipt through the application.
+
+Never automatically mark dispatched goods as received.
+
+Receiving Process
+
+Head Office Dispatch → Facility Notification → Physical Inspection → Receiving Confirmation → Inventory Update.
+
+Receiving Form
+
+- Distribution ID.
+- Facility.
+- Date and time.
+- Product.
+- Dispatched quantity.
+- Actual received quantity.
+- Shortage.
+- Damage.
+- Rejected quantity.
+- Condition.
+- Remarks.
+- Photo attachment.
+- Receiving employee.
+- In-charge review.
+
+Receiving Status
+
+- Awaiting Receipt.
+- Received in Full.
+- Partially Received.
+- Shortage Reported.
+- Damage Reported.
+- Disputed.
+- Confirmed.
+
+If quantities differ:
+
+- Generate discrepancy alert.
+- Notify Head Office.
+- Record shortage/damage.
+- Require remarks.
+- Preserve original dispatched quantity.
+- Require review and resolution.
+
+Facility stock must increase only after confirmation.
+
+13. EMERGENCY PURCHASE
+
+Create a separate Emergency Purchase Request.
+
+Field staff must obtain prior approval for the specific item and quantity.
+
+Required:
+
+- Item.
+- Quantity.
+- Estimated price.
+- Reason.
+- Facility.
+- Requesting employee.
+- Supporting evidence.
+- Approval reference.
+
+After approved purchase:
+
+- Record actual quantity.
+- Record actual price.
+- Upload receipt.
+- Record purchase date.
+- Compare approved and actual quantities.
+- Flag deviations.
+
+Unauthorized purchases must be flagged for management review.
+
+14. DAILY FOOD CONSUMPTION
+
+Each facility must record daily consumption.
+
+Daily form:
+
+- Facility.
+- Date.
+- Resident children.
+- Children present.
+- Children absent.
+- Meals prepared.
+- Breakfast servings.
+- Lunch servings.
+- Evening snack.
+- Dinner.
+- Special meals.
+- Product-wise consumption.
+- Opening stock.
+- Received quantity.
+- Closing stock.
+- Wastage.
+- Wastage reason.
+- Remarks.
+- Entered by.
+- Reviewed by.
+
+Stock calculation:
+
+Opening Stock + Received Quantity − Consumption − Wastage = Closing Stock.
+
+Provide daily, weekly, monthly, and annual consumption reports.
+
+15. MEAL AND CHILD ATTENDANCE
+
+Track:
+
+- Number of resident children.
+- Daily attendance.
+- Child-days.
+- Breakfast.
+- Lunch.
+- Evening snack.
+- Dinner.
+- Special meal.
+- Meal servings.
+- Missed meals.
+- Special dietary requirements.
+- Meal coverage.
+
+Provide facility-wise meal and attendance comparison.
+
+16. FOOD COST PER CHILD
+
+Calculate:
+
+Food Cost per Child per Day = Verified Food Expenditure ÷ Total Child-Days
+
+Track:
+
+- Food expenditure.
+- Child-days.
+- Meal servings.
+- Consumption.
+- Wastage.
+- Budget.
+- Actual expenditure.
+- Cost per child.
+- Cost per meal.
+- Facility-wise cost.
+- Monthly variation.
+
+Exclude cleaning, hygiene, LPG, kitchen supplies, personal care, and other non-food expenses.
+
+17. MARKET PRICE HISTORY
+
+Track market price history for at least six years, with a minimum 12-month comparison interface.
+
+For every product:
+
+- Product name.
+- Market.
+- Vendor.
+- Date.
+- Unit.
+- Quantity.
+- Unit price.
+- Price source.
+- Recorded by.
+- Verification status.
+
+Provide:
+
+- Previous price.
+- Current price.
+- Average price.
+- Highest price.
+- Lowest price.
+- 3-month comparison.
+- 6-month comparison.
+- 12-month comparison.
+- Annual comparison.
+- Price change percentage.
+- Market comparison.
+- Vendor comparison.
+
+Generate unusual price alerts.
+
+18. BUDGET AND ACCOUNTS
+
+Create facility-wise, category-wise, and monthly budgets.
+
+Budget fields:
+
+- Financial year.
+- Month.
+- Facility.
+- Category.
+- Approved budget.
+- Actual expenditure.
+- Remaining budget.
+- Variance.
+- Utilization percentage.
+
+Implement independent invoice verification.
+
+Verification status:
+
+- Pending.
+- Verified.
+- Returned.
+- Disputed.
+- Approved for Accounting.
+
+Provide:
+
+- Purchase ledger.
+- Vendor ledger.
+- Facility expense ledger.
+- Monthly expenditure.
+- Budget variance.
+- Pending invoices.
+- Missing receipts.
+- Unverified transactions.
+- Payment status.
+- Financial closing.
+
+19. MANAGEMENT EXCEPTION MONITORING
+
+Automatically flag:
+
+- Excessive purchase quantity.
+- Unusual prices.
+- Duplicate purchase.
+- Duplicate invoice.
+- Missing receipt.
+- Missing consumption entry.
+- Missing receiving confirmation.
+- Dispatch discrepancy.
+- Stock mismatch.
+- Abnormal wastage.
+- Abnormal food cost.
+- Budget exceeded.
+- Late reporting.
+- Unauthorized purchase.
+- Emergency purchase without approval.
+- Quantity deviation.
+- Unusual consumption.
+- Negative stock attempt.
+- Unapproved stock adjustment.
+
+Each exception must include:
+
+- Exception ID.
+- Facility.
+- Related transaction.
+- Description.
+- Severity.
+- Date.
+- Review status.
+- Responsible department.
+- Management comments.
+- Resolution.
+- Reviewed by.
+- Resolution date.
+
+Alerts are for review only, not automatic accusations.
+
+20. MANAGEMENT DASHBOARD
+
+Create dashboards for Founder, Director, HR Super Admin, Accounts, Logistics, and Field Staff.
+
+Main Dashboard
+
+Display:
+
+- Total purchase.
+- Total distribution.
+- Central stock.
+- Facility stock.
+- Pending requisitions.
+- Pending receiving confirmations.
+- Missing reports.
+- Pending invoice verification.
+- Total food expenditure.
+- Child-days.
+- Cost per child.
+- Budget utilization.
+- Stock shortage.
+- Wastage.
+- Exceptions.
+
+Facility Dashboard
+
+Each facility sees:
+
+- Stock.
+- Requisitions.
+- Received goods.
+- Pending confirmation.
+- Consumption.
+- Meals.
+- Attendance.
+- Wastage.
+- Food cost.
+- Reports.
+
+Management Comparative Dashboard
+
+Compare:
+
+- Kamalapur TSSB.
+- Kadamtali TSSB.
+- LEEDO Peace Home.
+
+Provide monthly, quarterly, and annual charts.
+
+21. REPORTING SYSTEM: ALL MODULES MUST HAVE REPORTS
+
+This is a mandatory requirement. Every major module must have a dedicated report section.
+
+Create a centralized Report Center with searchable, filterable, printable, and downloadable reports.
+
+A. Procurement Reports
+
+1. Purchase Register.
+2. Purchase Summary.
+3. Vendor-wise Purchase.
+4. Product-wise Purchase.
+5. Category-wise Purchase.
+6. Monthly Purchase.
+7. Annual Purchase.
+8. Requisition Status.
+9. Approved versus Purchased Quantity.
+10. Purchase Price Comparison.
+
+B. Distribution Reports
+
+11. Head Office Distribution Register.
+12. Facility-wise Distribution.
+13. Purchase-wise Distribution.
+14. Product-wise Distribution.
+15. Monthly Distribution.
+16. Central Stock Movement.
+17. Dispatch Register.
+
+C. Receiving Reports
+
+18. Receiving Confirmation Register.
+19. Dispatched versus Received.
+20. Pending Receiving Confirmation.
+21. Shortage Report.
+22. Damaged Goods Report.
+23. Disputed Distribution Report.
+24. Facility Receiving History.
+
+D. Inventory Reports
+
+25. Head Office Stock.
+26. Kamalapur Stock.
+27. Kadamtali Stock.
+28. Peace Home Stock.
+29. Stock Movement Ledger.
+30. Opening and Closing Stock.
+31. Stock Reconciliation.
+32. Minimum Stock Alert.
+33. Stock Adjustment Register.
+34. Expired or Damaged Stock Report, where applicable.
+
+E. Consumption and Meal Reports
+
+35. Daily Consumption.
+36. Monthly Consumption.
+37. Product-wise Consumption.
+38. Facility-wise Consumption.
+39. Daily Meal Report.
+40. Monthly Meal Report.
+41. Child Attendance.
+42. Child-Days.
+43. Meal Coverage.
+44. Wastage Report.
+45. Consumption versus Stock.
+
+F. Food Cost Reports
+
+46. Food Cost per Child per Day.
+47. Cost per Meal.
+48. Facility-wise Food Cost.
+49. Monthly Food Cost.
+50. Annual Food Cost.
+51. Child-Day versus Expenditure.
+52. Food Budget versus Actual.
+53. Food Cost Trend.
+54. Facility Comparative Cost.
+
+G. Market Price Reports
+
+55. Product Price History.
+56. 3-Month Price Comparison.
+57. 6-Month Price Comparison.
+58. 12-Month Price Comparison.
+59. Annual Price Comparison.
+60. Vendor Price Comparison.
+61. Market Price Comparison.
+62. Price Increase/Decrease Report.
+
+H. Accounts Reports
+
+63. Purchase Ledger.
+64. Vendor Ledger.
+65. Facility Expense Ledger.
+66. Invoice Register.
+67. Pending Bill Verification.
+68. Verified Bill Register.
+69. Budget Utilization.
+70. Budget Variance.
+71. Payment Status.
+72. Monthly Financial Closing.
+73. Annual Financial Summary.
+
+I. Management Reports
+
+74. Management Exception Report.
+75. Unauthorized Purchase Report.
+76. Missing Receipt Report.
+77. Missing Daily Entry Report.
+78. Pending Requisition Report.
+79. Pending Receiving Report.
+80. Stock Discrepancy Report.
+81. Abnormal Consumption Report.
+82. High Food Cost Report.
+83. Late Reporting Report.
+84. Facility Performance Report.
+85. Six-Year Historical Summary.
+
+J. HR and System Reports
+
+86. Employee Directory.
+87. User Access Report.
+88. Account Status Report.
+89. Password Reset History.
+90. Login History.
+91. Employee Transfer History.
+92. Audit Log Report.
+93. User Activity Report.
+94. System Data Archive Report.
+
+22. PRINT, PDF AND EXCEL EXPORT
+
+Every report must have a proper Print option.
+
+Implement a professional reporting and printing system.
+
+Every Report Must Support
+
+- View Report.
+- Search.
+- Date Range.
+- Facility Filter.
+- Product Filter.
+- Category Filter.
+- Vendor Filter.
+- Employee Filter.
+- Status Filter.
+- Print.
+- Download PDF.
+- Export Excel.
+- Export CSV where appropriate.
+
+Print Design
+
+Every printable report must include:
+
+- LEEDO organization name.
+- LEEDO FOODCARE title.
+- Report name.
+- Facility name or All Facilities.
+- Reporting period.
+- Report generation date.
+- Generated by employee.
+- Filter information.
+- Structured table.
+- Serial number.
+- Total quantity.
+- Total amount.
+- Summary section.
+- Signature section.
+- Page number.
+- Footer.
+
+Signature Section
+
+Include appropriate signature fields such as:
+
+Prepared By: __________________
+
+Checked By: __________________
+
+Approved By: __________________
+
+Date: __________________
+
+For facility reports:
+
+Facility In-charge: __________________
+
+Head Office Review: __________________
+
+Printing Requirements
+
+- Use clean A4 print layout.
+- Support portrait and landscape.
+- Repeat table headers on subsequent pages.
+- Prevent text clipping.
+- Avoid printing dashboard navigation and buttons.
+- Support multiple pages.
+- Ensure readable font sizes.
+- Include totals and subtotals.
+- Print all filtered records, not just visible screen rows.
+- Allow print preview before printing.
+- Ensure PDF and printed reports show consistent information.
+
+Use browser print functionality or a reliable PDF generation library.
+
+Do not make Print buttons decorative. Every Print button must actually generate a printable report.
+
+23. REPORT CENTER DESIGN
+
+Create a dedicated navigation item named Reports & Print Center.
+
+The Report Center must contain:
+
+- All Reports.
+- Procurement Reports.
+- Inventory Reports.
+- Receiving Reports.
+- Consumption Reports.
+- Food Cost Reports.
+- Accounts Reports.
+- Market Price Reports.
+- Management Reports.
+- HR Reports.
+- Historical Reports.
+
+Each report must have:
+
+1. Report selection.
+2. Filter selection.
+3. Generate Report button.
+4. Preview.
+5. Print.
+6. PDF Download.
+7. Excel Export.
+
+Reports must be based on actual Firestore data.
+
+Do not create fake report data.
+
+24. MONTHLY CLOSING
+
+Create a monthly closing workflow.
+
+Before closing, check:
+
+- Purchase records completed.
+- Bills uploaded.
+- Distribution completed.
+- Receiving confirmations completed or discrepancies documented.
+- Daily consumption entered.
+- Stock reconciled.
+- Wastage recorded.
+- Accounts verified.
+- Reports submitted.
+- Budget variances explained.
+
+Authorized management/accounts staff can close a month.
+
+After closing, historical records remain accessible.
+
+Reopening requires authorization and a documented reason.
+
+25. FIREBASE BACKEND AND SIX-YEAR DATA RETENTION
+
+Use Firebase as the actual permanent backend.
+
+Required services:
+
+- Firebase Authentication.
+- Cloud Firestore.
+- Firebase Storage.
+- Firestore Security Rules.
+- Firebase App Check.
+- Cloud Functions where necessary.
+- Firebase Hosting or suitable deployment.
+
+Database Collections
+
+Create structured collections:
+
+- users
+- employees
+- facilities
+- products
+- vendors
+- requisitions
+- requisition_items
+- purchases
+- purchase_items
+- central_inventory
+- distributions
+- distribution_items
+- receiving_confirmations
+- facility_inventory
+- inventory_movements
+- daily_consumption
+- meal_records
+- child_attendance
+- wastage_records
+- market_price_history
+- budgets
+- invoices
+- accounts_verification
+- exceptions
+- notifications
+- monthly_closing
+- audit_logs
+- system_settings
+
+Use unique IDs, timestamps, employee IDs, facility IDs, and transaction references.
+
+Historical Data Preservation
+
+Maintain all records for at least six years.
+
+Never automatically delete:
+
+- Purchase records.
+- Distribution records.
+- Receiving confirmations.
+- Invoices.
+- Consumption records.
+- Attendance.
+- Historical prices.
+- Budgets.
+- Monthly closing.
+- Employee history.
+- Audit logs.
+- Reports.
+
+Use append-only history or correction entries for finalized transactions.
+
+Backup
+
+Implement:
+
+- Scheduled Firestore backups.
+- Backup retention.
+- Storage backup strategy.
+- Recovery procedures.
+- Restore testing.
+- Data archive reporting.
+
+Do not claim six-year backup is configured until actual backup policies are configured.
+
+Firebase free-tier limits may not be sufficient. Configure an appropriate billing plan if required.
+
+26. AUDIT LOG
+
+Record:
+
+- Login.
+- Logout.
+- Purchase.
+- Purchase modification.
+- Approval.
+- Distribution.
+- Receiving confirmation.
+- Stock adjustment.
+- Consumption.
+- Invoice verification.
+- Budget change.
+- Monthly closing.
+- Report generation.
+- PDF export.
+- Excel export.
+- Password reset.
+- User creation.
+- Permission change.
+- Employee transfer.
+- Account deactivation.
+
+Audit fields:
+
+- User ID.
+- EID.
+- Action.
+- Module.
+- Record ID.
+- Previous value.
+- New value.
+- Timestamp.
+- Reason.
+- Facility.
+
+Ordinary users must not edit audit logs.
+
+27. NOTIFICATION SYSTEM
+
+Create in-app notifications for:
+
+- New requisition.
+- Requisition approval.
+- Purchase completion.
+- Dispatch.
+- Pending receiving confirmation.
+- Receipt confirmed.
+- Shortage.
+- Damage.
+- Stock shortage.
+- Emergency purchase.
+- Bill verification.
+- Budget exceeded.
+- Missing daily report.
+- Monthly closing.
+- Management exception.
+
+Notifications must respect user roles and facility access.
+
+28. APPLICATION MENU
+
+Create the following sidebar navigation:
+
+1. Dashboard
+2. Requisitions
+3. Procurement
+4. Purchase Records
+5. Central Stock
+6. Distribution
+7. Receiving Confirmation
+8. Facility Inventory
+9. Daily Consumption
+10. Meal & Attendance
+11. Wastage
+12. Market Price History
+13. Budget & Accounts
+14. Vendor Management
+15. Reports & Print Center
+16. Exception Monitoring
+17. Monthly Closing
+18. HR & User Management
+19. Audit Logs
+20. Settings
+
+Show only authorized menus.
+
+29. USER INTERFACE DESIGN
+
+Design a modern professional organizational management application.
+
+Requirements:
+
+- LEEDO branding.
+- Navy blue and green theme.
+- Clean dashboard.
+- Professional tables.
+- Search and filters.
+- Charts.
+- Sidebar navigation.
+- Role-specific dashboard.
+- Responsive mobile interface.
+- Desktop management interface.
+- Bangla/English toggle.
+- Clear status badges.
+- Loading indicators.
+- Error messages.
+- Confirmation dialogs.
+- Print preview.
+- PDF export.
+- Excel export.
+
+30. TECHNICAL IMPLEMENTATION
+
+Use a suitable modern frontend framework supported by Google AI Studio.
+
+Implement:
+
+- Firebase Authentication.
+- Firestore persistence.
+- Firebase Storage.
+- Secure backend operations.
+- Firestore Security Rules.
+- Cloud Functions.
+- Transaction-safe stock updates.
+- Unique transaction IDs.
+- Duplicate prevention.
+- Validation.
+- Backend permission checks.
+- Inventory reconciliation.
+- Audit logging.
+- Report generation.
+- PDF generation.
+- Excel generation.
+- Search and filters.
+- Pagination.
+- Responsive design.
+
+Do not use localStorage as the primary database.
+
+Do not simulate authentication.
+
+Do not create fake successful purchases or stock movements.
+
+Do not display successful Firebase connection until verified.
+
+If Firebase credentials are missing, clearly identify the required setup and provide the integration-ready implementation.
+
+31. FINAL TESTING AND ACCEPTANCE
+
+Before considering the application complete, verify all workflows.
+
+Test 1: Login
+
+Employee opens app → EID login → Initial password → Mandatory password change → Authorized dashboard.
+
+Test 2: HR Password Reset
+
+HR searches employee → Initiates reset → Employee resets password → New login successful.
+
+Test 3: Procurement
+
+Facility requisition → Head Office approval → Central purchase → Purchase record → Invoice upload → Central stock update.
+
+Test 4: Distribution
+
+Head Office distributes → Facility receives notification → Facility checks goods → Actual receiving confirmation → Facility stock updates.
+
+Test 5: Shortage
+
+Dispatched quantity differs from received quantity → Discrepancy alert → Management review → Resolution record.
+
+Test 6: Consumption
+
+Facility records daily consumption → Stock decreases → Meals and attendance recorded → Closing stock calculated.
+
+Test 7: Accounts
+
+Invoice verification → Financial reports → Budget variance → Monthly closing.
+
+Test 8: Reporting
+
+Generate every report → Apply filters → Preview → Print → Download PDF → Export Excel.
+
+Test 9: Data Retention
+
+Historical records remain accessible for six years or more.
+
+Test 10: Permissions
+
+Each employee can access only authorized modules, facilities, and records.
+
+32. FINAL DEVELOPMENT INSTRUCTION
+
+Build LEEDO FOODCARE as a fully functional, secure, professional organizational application.
+
+Prioritize:
+
+- Centralized procurement.
+- Accurate purchase records.
+- Head Office stock.
+- Facility-wise distribution.
+- Mandatory actual receiving confirmation.
+- Inventory accuracy.
+- Daily food consumption.
+- Child attendance and meals.
+- Food cost per child.
+- Accounts verification.
+- Management monitoring.
+- Complete reporting.
+- Print-ready reports.
+- PDF and Excel exports.
+- HR-managed employee access.
+- Secure EID login.
+- HR password reset.
+- Firebase persistence.
+- Six-year data retention.
+- Backup and recovery.
+- Audit logs.
+- Data integrity.
+
+IMPORTANT: Build the complete application with working modules and real database operations. All major data modules must have searchable reports, and every report must be printable and exportable. Do not stop at a dashboard prototype.

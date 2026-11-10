@@ -1,0 +1,148 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isSuperAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'hr.leedo2000@gmail.com' ||
+        (exists(/databases/$(database)/documents/employees/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/employees/$(request.auth.uid)).data.role == 'super_admin')
+      );
+    }
+
+    function isLogisticsOrFinance() {
+      return isSignedIn() && (
+        isSuperAdmin() ||
+        (exists(/databases/$(database)/documents/employees/$(request.auth.uid)) &&
+         (get(/databases/$(database)/documents/employees/$(request.auth.uid)).data.role in ['founder', 'director', 'logistics', 'accountant', 'assistant_accountant']))
+      );
+    }
+
+    // Employees Collection
+    match /employees/{employeeId} {
+      allow read: if isSignedIn();
+      allow create, delete: if isSuperAdmin();
+      allow update: if isSuperAdmin() || (isSignedIn() && request.auth.uid == employeeId &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['passwordChanged', 'passwordHash', 'phone', 'updatedAt']));
+    }
+
+    // Facilities
+    match /facilities/{facilityId} {
+      allow read: if isSignedIn();
+      allow write: if isSuperAdmin();
+    }
+
+    // Products Master Catalog
+    match /products/{productId} {
+      allow read: if isSignedIn();
+      allow write: if isLogisticsOrFinance();
+    }
+
+    // Requisitions
+    match /requisitions/{reqId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(reqId);
+      allow update: if isSignedIn() && (
+        isLogisticsOrFinance() ||
+        resource.data.requestingEid == request.auth.uid ||
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'remarks', 'items', 'updatedAt'])
+      );
+      allow delete: if isSuperAdmin();
+    }
+
+    // Purchases
+    match /purchases/{purchaseId} {
+      allow read: if isSignedIn();
+      allow create, update: if isLogisticsOrFinance() && isValidId(purchaseId);
+      allow delete: if isSuperAdmin();
+    }
+
+    // Central & Facility Inventory Stock
+    match /central_inventory/{itemId} {
+      allow read: if isSignedIn();
+      allow write: if isLogisticsOrFinance();
+    }
+
+    match /facility_inventory/{itemId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
+    }
+
+    // Distributions
+    match /distributions/{distId} {
+      allow read: if isSignedIn();
+      allow create, update: if isLogisticsOrFinance() && isValidId(distId);
+      allow delete: if isSuperAdmin();
+    }
+
+    // Receiving Confirmations
+    match /receiving_confirmations/{rcvId} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn() && isValidId(rcvId);
+      allow delete: if isSuperAdmin();
+    }
+
+    // Daily Food Consumption
+    match /daily_consumption/{consId} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn() && isValidId(consId);
+      allow delete: if isSuperAdmin();
+    }
+
+    // Meal & Attendance
+    match /meal_records/{recordId} {
+      allow read, write: if isSignedIn() && isValidId(recordId);
+    }
+
+    // Market Price History
+    match /market_prices/{priceId} {
+      allow read: if isSignedIn();
+      allow create, update: if isLogisticsOrFinance() && isValidId(priceId);
+      allow delete: if isSuperAdmin();
+    }
+
+    // Budgets & Accounts
+    match /budgets/{budgetId} {
+      allow read: if isSignedIn();
+      allow write: if isLogisticsOrFinance();
+    }
+
+    // Management Exceptions
+    match /exceptions/{excId} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn() && isValidId(excId);
+      allow delete: if isSuperAdmin();
+    }
+
+    // Monthly Closing
+    match /monthly_closing/{closingId} {
+      allow read: if isSignedIn();
+      allow write: if isLogisticsOrFinance();
+    }
+
+    // Immutable Audit Logs: Create only, no update or delete
+    match /audit_logs/{logId} {
+      allow read: if isLogisticsOrFinance();
+      allow create: if isSignedIn() && isValidId(logId);
+      allow update, delete: if false;
+    }
+
+    // Test connection doc
+    match /test/{docId} {
+      allow read, write: if true;
+    }
+  }
+}
