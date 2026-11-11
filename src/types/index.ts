@@ -7,6 +7,7 @@ export type UserRole =
   | 'founder'             // Forhad Hossain (1001) - Full organizational oversight
   | 'director'            // Murshida Akhter Kanta (1002) - Procurement & financial supervision
   | 'super_admin'         // Md. Omar Faruque (1057) - Super Admin & HR
+  | 'hr'                  // HR Officer / HR Admin - Employee & role management
   | 'accountant'          // Md Habibur Rahman (1004) - Independent financial verification
   | 'assistant_accountant'// Sazzad Hosen (1079) - Accounts & procurement documentation
   | 'logistics'           // Rone Ahammed (1009) - Central purchasing, vendor & stock

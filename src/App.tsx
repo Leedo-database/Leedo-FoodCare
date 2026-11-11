@@ -99,6 +99,10 @@ const MainLayout: React.FC = () => {
           {activeTab === 'hrManagement' && <HRManagement />}
           {activeTab === 'auditLogs' && <AuditLogs />}
           {activeTab === 'settings' && <Settings />}
+
+          <footer className="mt-10 pt-4 border-t border-slate-200/80 text-center text-[11px] text-slate-400 print:hidden">
+            Develop by shadowgili
+          </footer>
         </main>
       </div>
 

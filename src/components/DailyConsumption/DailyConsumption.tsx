@@ -105,8 +105,8 @@ export const DailyConsumption: React.FC = () => {
       dinnerServings,
       specialMealServings,
       items: consumedItems,
-      enteredByEid: currentUser?.eid || '1035',
-      enteredByName: currentUser?.name || 'Cook / Shelter Mother',
+      enteredByEid: currentUser?.eid || '',
+      enteredByName: currentUser?.name || '',
       remarks,
     });
 

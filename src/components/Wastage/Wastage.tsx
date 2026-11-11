@@ -39,7 +39,7 @@ export const Wastage: React.FC = () => {
       estimatedCost,
       reason,
       reasonDetails,
-      reportedByEid: currentUser?.eid || '1035',
+      reportedByEid: currentUser?.eid || '',
     });
 
     setIsModalOpen(false);

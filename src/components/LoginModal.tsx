@@ -58,9 +58,6 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onSuccess }) => {
           <p className="text-xs text-slate-500 font-medium mt-1">
             Local Education and Economic Development Organization, Bangladesh
           </p>
-          <div className="inline-block mt-2.5 px-3 py-1 bg-slate-100 border border-slate-200 rounded-full text-[11px] font-semibold text-slate-700">
-            দৈনিক কর্মী লগইন (Employee ID Authentication)
-          </div>
         </div>
 
         {error && (
@@ -105,9 +102,6 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onSuccess }) => {
               />
               <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
             </div>
-            <div className="mt-2 p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-[11px] text-slate-600 leading-relaxed">
-              প্রথমবার লগইনের ক্ষেত্রে আপনার <strong>EID নম্বরটিই</strong> প্রাথমিক পাসওয়ার্ড। প্রথম লগইনের সাথে সাথেই পাসওয়ার্ড পরিবর্তন করা বাধ্যতামূলক এবং পরিবর্তিত পাসওয়ার্ডটি স্থায়ীভাবে সংরক্ষিত থাকবে।
-            </div>
           </div>
 
           <button
@@ -119,6 +113,10 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onSuccess }) => {
             {loading ? 'যাচাই করা হচ্ছে...' : 'লগইন করুন (Sign In)'}
           </button>
         </form>
+
+        <div className="mt-5 pt-3 border-t border-slate-100 text-center text-[11px] text-slate-400">
+          Develop by shadowgili
+        </div>
       </div>
     </div>
   );

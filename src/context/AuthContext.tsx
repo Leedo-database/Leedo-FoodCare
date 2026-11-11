@@ -11,7 +11,8 @@ interface AuthContextType {
   changePassword: (newPassword: string) => Promise<{ success: boolean; message: string }>;
   hrResetPassword: (targetEid: string) => Promise<{ success: boolean; message: string }>;
   updateEmployee: (employee: Employee) => Promise<void>;
-  createEmployee: (employeeData: Omit<Employee, 'passwordChanged'>) => Promise<void>;
+  createEmployee: (employeeData: Omit<Employee, 'passwordChanged'>, initialPassword?: string) => Promise<void>;
+  deleteEmployee: (targetEid: string) => Promise<{ success: boolean; message: string }>;
   canAccessModule: (module: string) => boolean;
   canAccessFacility: (facilityId: FacilityId | 'all') => boolean;
 }
@@ -22,6 +23,8 @@ const SESSION_KEY_USER = 'leedo_foodcare_session_user';
 const SESSION_KEY_DATE = 'leedo_foodcare_session_date';
 const LOCAL_STORAGE_KEY_EMPLOYEES = 'leedo_foodcare_employees';
 const CLEAN_AUTH_KEY = 'leedo_foodcare_auth_v6_clean';
+const REMOVED_STAFF_CLEANUP_KEY = 'leedo_foodcare_removed_staff_v7';
+const REMOVED_EIDS = ['1050', '1035', '1042'];
 
 // Helper to hash passwords in browser using Web Crypto API SHA-256
 async function hashPassword(plain: string): Promise<string> {
@@ -33,11 +36,38 @@ async function hashPassword(plain: string): Promise<string> {
 }
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // One-time clean reset of legacy demo employee cache so first-login mandatory password change applies cleanly
+  // One-time clean reset of legacy demo employee cache
   if (typeof window !== 'undefined' && localStorage.getItem(CLEAN_AUTH_KEY) !== 'yes') {
     localStorage.removeItem(LOCAL_STORAGE_KEY_EMPLOYEES);
     localStorage.removeItem('leedo_foodcare_current_user');
     localStorage.setItem(CLEAN_AUTH_KEY, 'yes');
+  }
+
+  // One-time removal of EIDs 1050, 1035, 1042 from any cached roster while keeping real saved passwords
+  if (typeof window !== 'undefined' && localStorage.getItem(REMOVED_STAFF_CLEANUP_KEY) !== 'yes') {
+    const existingRaw = localStorage.getItem(LOCAL_STORAGE_KEY_EMPLOYEES);
+    if (existingRaw) {
+      try {
+        const parsed = JSON.parse(existingRaw) as Employee[];
+        const filtered = parsed.filter((e) => !REMOVED_EIDS.includes(e.eid));
+        localStorage.setItem(LOCAL_STORAGE_KEY_EMPLOYEES, JSON.stringify(filtered));
+      } catch {
+        localStorage.removeItem(LOCAL_STORAGE_KEY_EMPLOYEES);
+      }
+    }
+    const activeSessionRaw = sessionStorage.getItem(SESSION_KEY_USER);
+    if (activeSessionRaw) {
+      try {
+        const activeUser = JSON.parse(activeSessionRaw) as Employee;
+        if (REMOVED_EIDS.includes(activeUser.eid)) {
+          sessionStorage.removeItem(SESSION_KEY_USER);
+          sessionStorage.removeItem(SESSION_KEY_DATE);
+        }
+      } catch {
+        sessionStorage.removeItem(SESSION_KEY_USER);
+      }
+    }
+    localStorage.setItem(REMOVED_STAFF_CLEANUP_KEY, 'yes');
   }
 
   const [employees, setEmployees] = useState<Employee[]>(() => {
@@ -60,7 +90,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (savedUser && savedDate === today) {
       try {
         const parsed = JSON.parse(savedUser) as Employee;
-        // Sync with latest saved employee profile (e.g. updated passwordHash/passwordChanged)
         const storedEmployeesRaw = localStorage.getItem(LOCAL_STORAGE_KEY_EMPLOYEES);
         if (storedEmployeesRaw) {
           const storedEmployees = JSON.parse(storedEmployeesRaw) as Employee[];
@@ -93,6 +122,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [currentUser]);
 
+  const isHRAdmin = (role?: Employee['role']) =>
+    role === 'super_admin' || role === 'hr' || role === 'founder' || role === 'director';
+
   // EID-based login validation
   const login = async (eid: string, password: string): Promise<{ success: boolean; message: string; requiresPasswordChange?: boolean }> => {
     setLoading(true);
@@ -120,7 +152,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           success: false,
           message: emp.passwordChanged
             ? 'Incorrect password. Please enter your updated personal password.'
-            : 'Incorrect password. For first-time login, your initial password is your EID.',
+            : 'Incorrect password. Please check with HR Admin.',
         };
       }
 
@@ -129,7 +161,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setCurrentUser(emp);
         return {
           success: true,
-          message: 'Initial login detected. You must change your password to continue.',
+          message: 'Password update required to continue.',
           requiresPasswordChange: true,
         };
       }
@@ -172,8 +204,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const hrResetPassword = async (targetEid: string): Promise<{ success: boolean; message: string }> => {
-    if (!currentUser || currentUser.role !== 'super_admin') {
-      return { success: false, message: 'Unauthorized. Only HR Super Admin can reset employee credentials.' };
+    if (!currentUser || !isHRAdmin(currentUser.role)) {
+      return { success: false, message: 'Unauthorized. Only HR / Admin can reset employee credentials.' };
     }
 
     const target = employees.find((e) => e.eid === targetEid);
@@ -201,17 +233,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const updateEmployee = async (employee: Employee) => {
+    if (!currentUser || !isHRAdmin(currentUser.role)) return;
     const nextEmployees = employees.map((e) => (e.eid === employee.eid ? employee : e));
     localStorage.setItem(LOCAL_STORAGE_KEY_EMPLOYEES, JSON.stringify(nextEmployees));
     setEmployees(nextEmployees);
-    if (currentUser?.eid === employee.eid) {
+    if (currentUser.eid === employee.eid) {
       setCurrentUser(employee);
     }
   };
 
-  const createEmployee = async (employeeData: Omit<Employee, 'passwordChanged'>) => {
+  const createEmployee = async (employeeData: Omit<Employee, 'passwordChanged'>, initialPassword?: string) => {
+    if (!currentUser || !isHRAdmin(currentUser.role)) return;
+    const trimmedPass = initialPassword?.trim();
+    const passwordHash = trimmedPass ? await hashPassword(trimmedPass) : undefined;
     const newEmp: Employee = {
       ...employeeData,
+      passwordHash,
       passwordChanged: false,
       requiresPasswordReset: true,
     };
@@ -220,12 +257,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setEmployees(nextEmployees);
   };
 
+  const deleteEmployee = async (targetEid: string): Promise<{ success: boolean; message: string }> => {
+    if (!currentUser || !isHRAdmin(currentUser.role)) {
+      return { success: false, message: 'Unauthorized. Only HR / Admin can delete employees.' };
+    }
+    if (targetEid === currentUser.eid) {
+      return { success: false, message: 'You cannot delete your own active account.' };
+    }
+    const target = employees.find((e) => e.eid === targetEid);
+    if (!target) {
+      return { success: false, message: 'Employee not found.' };
+    }
+
+    const nextEmployees = employees.filter((e) => e.eid !== targetEid);
+    localStorage.setItem(LOCAL_STORAGE_KEY_EMPLOYEES, JSON.stringify(nextEmployees));
+    setEmployees(nextEmployees);
+    return {
+      success: true,
+      message: `Employee ${target.name} (EID ${target.eid}) has been permanently deleted.`,
+    };
+  };
+
   // Strict role-based permission gate
   const canAccessModule = (module: string): boolean => {
     if (!currentUser) return false;
     const { role } = currentUser;
 
-    // Founder, Director, and HR Super Admin have broad access
+    // Founder, Director, and HR Super Admin have full access
     if (role === 'founder' || role === 'director' || role === 'super_admin') return true;
 
     switch (module) {
@@ -257,11 +315,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       case 'monthlyClosing':
         return role === 'accountant';
       case 'hrManagement':
-        return false;
+        return role === 'hr';
       case 'auditLogs':
-        return role === 'accountant';
+        return role === 'accountant' || role === 'hr';
       case 'settings':
-        return false;
+        return role === 'hr';
       default:
         return false;
     }
@@ -275,6 +333,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       'founder',
       'director',
       'super_admin',
+      'hr',
       'accountant',
       'assistant_accountant',
       'logistics',
@@ -304,6 +363,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         hrResetPassword,
         updateEmployee,
         createEmployee,
+        deleteEmployee,
         canAccessModule,
         canAccessFacility,
       }}

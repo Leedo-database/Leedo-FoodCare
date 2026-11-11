@@ -32,8 +32,15 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
     exceptions,
     donorContributions,
   } = useData();
-  const { currentUser, canAccessFacility } = useAuth();
+  const { currentUser, canAccessFacility, employees } = useAuth();
   const { formatCurrency } = useLanguage();
+
+  const getFacilityInChargeLabel = (facId: FacilityId) => {
+    const activeMatch =
+      employees.find((e) => e.facilityId === facId && e.role === 'incharge' && e.status === 'active') ||
+      employees.find((e) => e.facilityId === facId && e.status === 'active');
+    return activeMatch ? `${activeMatch.name} (${activeMatch.eid})` : 'Assign via HR';
+  };
 
   const isHeadOffice = currentUser?.facilityId === 'central';
 
@@ -281,7 +288,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
                 </div>
                 <div>
                   <span className="text-slate-400 block text-[10px]">In-Charge</span>
-                  <span className="font-semibold text-slate-800">Md. Masud (1023)</span>
+                  <span className="font-semibold text-slate-800">{getFacilityInChargeLabel('kamalapur')}</span>
                 </div>
                 <div>
                   <span className="text-slate-400 block text-[10px]">Latest Daily Spend</span>
@@ -318,7 +325,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
                 </div>
                 <div>
                   <span className="text-slate-400 block text-[10px]">In-Charge</span>
-                  <span className="font-semibold text-slate-800">Saidur Rahman Sajan (1028)</span>
+                  <span className="font-semibold text-slate-800">{getFacilityInChargeLabel('kadamtali')}</span>
                 </div>
                 <div>
                   <span className="text-slate-400 block text-[10px]">Latest Daily Spend</span>
@@ -354,8 +361,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
                   <span className="font-bold text-slate-800">{peaceMetrics.presentChildren} Children</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[10px]">Supervisor</span>
-                  <span className="font-semibold text-slate-800">Anowar Hossain (1050)</span>
+                  <span className="text-slate-400 block text-[10px]">In-Charge</span>
+                  <span className="font-semibold text-slate-800">{getFacilityInChargeLabel('peace_home')}</span>
                 </div>
                 <div>
                   <span className="text-slate-400 block text-[10px]">Latest Daily Spend</span>
